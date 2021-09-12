@@ -1,6 +1,5 @@
 #!/bin/bash
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
+
 
 set -e
 
@@ -10,8 +9,6 @@ if [[ "${NOTEBOOK_ARGS} $*" != *"--ip="* ]]; then
 fi
 
 # handle some deprecated environment variables
-# from DockerSpawner < 0.8.
-# These won't be passed from DockerSpawner 0.9,
 # so avoid specifying --arg=empty-string
 if [ -n "${NOTEBOOK_DIR}" ]; then
     # shellcheck disable=SC2089

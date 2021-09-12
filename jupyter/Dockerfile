@@ -1,10 +1,4 @@
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
-
 # Ubuntu 20.04 (focal)
-# https://hub.docker.com/_/ubuntu/?tab=tags&name=focal
-
 
 # Copy from Jupyter Development Team.
 # modified something
@@ -23,8 +17,6 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER root
 
 # Install all OS dependencies for notebook server that starts but lacks all
-# features (e.g., download as all possible file formats)
-# Install tini: init for containers
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update --yes && \
     apt-get install --yes --no-install-recommends \
@@ -65,7 +57,7 @@ RUN sed -i 's/^#force_color_prompt=yes/force_color_prompt=yes/' /etc/skel/.bashr
    # Add call to conda init script see https://stackoverflow.com/a/58081608/4413446
    echo 'eval "$(command conda shell.bash hook 2> /dev/null)"' >> /etc/skel/.bashrc
 
-# Create NB_USER with name jovyan user with UID=1000 and in the 'users' group
+# Create NB_USER with name phuoc user with UID=1000 and in the 'users' group
 # and make sure these dirs are writable by the `users` group.
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     sed -i.bak -e 's/^%admin/#%admin/' /etc/sudoers && \
@@ -84,7 +76,7 @@ ARG PYTHON_VERSION=default
 RUN mkdir "/home/${NB_USER}/work" && \
     fix-permissions "/home/${NB_USER}"
 
-# Install conda as jovyan and check the sha256 sum provided on the download site
+# Install conda as phuoc and check the sha256 sum provided on the download site
 WORKDIR /tmp
 
 # ---- Miniforge installer ----
@@ -174,20 +166,20 @@ EXPOSE 8888
 
 # Configure container startup
 ENTRYPOINT ["tini", "-g", "--"]
-CMD ["start-notebook.sh"]
+CMD ["notebook.sh"]
 
 # Copy local files as late as possible to avoid cache busting
 # these files must be change mode to execute with chmod
-COPY start.sh start-notebook.sh start-singleuser.sh /usr/local/bin/
+COPY start.sh notebook.sh singleuser.sh /usr/local/bin/
 # Currently need to have both jupyter_notebook_config and jupyter_server_config to support classic and lab
-COPY jupyter_notebook_config.py /etc/jupyter/
+COPY jupyter_config.py /etc/jupyter/
 
 # Fix permissions on /etc/jupyter as root
 USER root
 
 # Prepare upgrade to JupyterLab V3.0 #1205
 RUN sed -re "s/c.NotebookApp/c.ServerApp/g" \
-    /etc/jupyter/jupyter_notebook_config.py > /etc/jupyter/jupyter_server_config.py && \
+    /etc/jupyter/jupyter_config.py > /etc/jupyter/jupyter_server_config.py && \
     fix-permissions /etc/jupyter/
 
 # Import matplotlib the first time to build the font cache.
