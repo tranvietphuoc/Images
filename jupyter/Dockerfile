@@ -23,6 +23,9 @@ RUN apt-get update --yes && \
     cmake build-essential \
     curl \
     tini \
+    gcc \
+    libzmq3-dev \
+    pkg-config \
     wget \
     git \
     ca-certificates \
@@ -162,6 +165,43 @@ RUN git clone https://github.com/PAIR-code/facets.git && \
     fix-permissions "/home/${NB_USER}"
 
 
+# rust
+ENV RUSTUP_HOME=/home/${NB_USER}/.rustup \
+    CARGO_HOME=/home/${NB_USER}/.cargo \
+    PATH=/home/${NB_USER}/.cargo/bin:$PATH \
+    RUST_VERSION=1.55.0
+
+RUN set -eux; \
+    dpkgArch="$(dpkg --print-architecture)"; \
+    case "${dpkgArch##*-}" in \
+    amd64) rustArch='x86_64-unknown-linux-gnu'; rustupSha256='3dc5ef50861ee18657f9db2eeb7392f9c2a6c95c90ab41e45ab4ca71476b4338' ;; \
+        armhf) rustArch='armv7-unknown-linux-gnueabihf'; rustupSha256='67777ac3bc17277102f2ed73fd5f14c51f4ca5963adadf7f174adf4ebc38747b' ;; \
+        arm64) rustArch='aarch64-unknown-linux-gnu'; rustupSha256='32a1532f7cef072a667bac53f1a5542c99666c4071af0c9549795bbdb2069ec1' ;; \
+        x86_64) rustArch='x86_64-unknown-linux-musl'; rustupSha256='bdf022eb7cba403d0285bb62cbc47211f610caec24589a72af70e1e900663be9' ;; \
+        aarch64) rustArch='aarch64-unknown-linux-musl'; rustupSha256='89ce657fe41e83186f5a6cdca4e0fd40edab4fd41b0f9161ac6241d49fbdbbbe' ;; \
+        *) echo >&2 "unsupported architecture: $dpkgArch"; exit 1 ;; \
+    esac; \
+    url="https://static.rust-lang.org/rustup/archive/1.24.3/${rustArch}/rustup-init"; \
+    wget "$url"; \
+    echo "${rustupSha256} *rustup-init" | sha256sum -c -; \
+    chmod +x rustup-init; \
+    ./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION --default-host ${rustArch}; \
+    # chown ${NB_USER} ${RUSTUP_HOME} ${CARGO_HOME} ;\
+    # chmod -R 777 $RUSTUP_HOME $CARGO_HOME; \
+
+    fix-permissions $RUSTUP_HOME ; \
+    fix-permissions $CARGO_HOME ; \
+    
+    rm rustup-init; \
+    rustup --version; \
+    cargo --version; \
+    rustc --version;
+
+RUN set -eux; \
+    cargo install evcxr_jupyter; \
+    evcxr_jupyter --install;
+
+# expose
 EXPOSE 8888
 
 # Configure container startup
