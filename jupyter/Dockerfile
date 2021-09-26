@@ -1,12 +1,13 @@
 # Ubuntu 20.04 (focal)
 
 # Copy from Jupyter Development Team.
+
 # modified something
 ARG ROOT_CONTAINER=ubuntu:focal
 
 FROM $ROOT_CONTAINER
 
-LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+LABEL maintainer="phuoctv"
 ARG NB_USER="phuoc"
 ARG NB_UID="1000"
 ARG NB_GID="100"
