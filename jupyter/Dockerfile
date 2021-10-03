@@ -176,8 +176,6 @@ RUN set -eux; \
     dpkgArch="$(dpkg --print-architecture)"; \
     case "${dpkgArch##*-}" in \
     amd64) rustArch='x86_64-unknown-linux-gnu'; rustupSha256='3dc5ef50861ee18657f9db2eeb7392f9c2a6c95c90ab41e45ab4ca71476b4338' ;; \
-        armhf) rustArch='armv7-unknown-linux-gnueabihf'; rustupSha256='67777ac3bc17277102f2ed73fd5f14c51f4ca5963adadf7f174adf4ebc38747b' ;; \
-        arm64) rustArch='aarch64-unknown-linux-gnu'; rustupSha256='32a1532f7cef072a667bac53f1a5542c99666c4071af0c9549795bbdb2069ec1' ;; \
         x86_64) rustArch='x86_64-unknown-linux-musl'; rustupSha256='bdf022eb7cba403d0285bb62cbc47211f610caec24589a72af70e1e900663be9' ;; \
         aarch64) rustArch='aarch64-unknown-linux-musl'; rustupSha256='89ce657fe41e83186f5a6cdca4e0fd40edab4fd41b0f9161ac6241d49fbdbbbe' ;; \
         *) echo >&2 "unsupported architecture: $dpkgArch"; exit 1 ;; \
@@ -196,11 +194,13 @@ RUN set -eux; \
     rm rustup-init; \
     rustup --version; \
     cargo --version; \
-    rustc --version;
+    rustc --version; 
 
 RUN set -eux; \
     cargo install evcxr_jupyter; \
-    evcxr_jupyter --install;
+    cargo install cargo-cache; \
+    evcxr_jupyter --install; \
+    cargo cache -a;
 
 # expose
 EXPOSE 8888
