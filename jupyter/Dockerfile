@@ -157,6 +157,20 @@ RUN mamba install --quiet --yes \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
+RUN conda install --quiet --yes --freeze-installed -c conda-forge nodejs \
+    'python-language-server' \
+    'jupyterlab-git' \
+    'jupyter-lsp=1.5.0' \
+  && jupyter labextension install --no-build \
+    '@krassowski/jupyterlab-lsp@3.9.1' \
+  && jupyter lab build --dev-build=False --minimize=True \
+  && conda clean --all -f -y \
+  && rm -rf \
+    $CONDA_DIR/share/jupyter/lab/staging \
+    /home/$NB_USER/.cache/yarn \
+  && fix-permissions $CONDA_DIR \
+  && fix-permissions /home/$NB_USER
+
 # Install facets which does not have a pip or conda package at the moment
 WORKDIR /tmp
 RUN git clone https://github.com/PAIR-code/facets.git && \
@@ -170,7 +184,7 @@ RUN git clone https://github.com/PAIR-code/facets.git && \
 ENV RUSTUP_HOME=/home/${NB_USER}/.rustup \
     CARGO_HOME=/home/${NB_USER}/.cargo \
     PATH=/home/${NB_USER}/.cargo/bin:$PATH \
-    RUST_VERSION=1.55.0
+    RUST_VERSION=1.56.1
 
 RUN set -eux; \
     dpkgArch="$(dpkg --print-architecture)"; \
