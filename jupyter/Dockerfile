@@ -119,6 +119,7 @@ RUN set -x && \
 RUN mamba install --quiet --yes \
     'notebook' \
     'jupyterhub' \
+    'retrolab' \
     'jupyterlab' \
     'altair' \
     'beautifulsoup4' \
@@ -160,6 +161,8 @@ RUN mamba install --quiet --yes \
 RUN conda install --quiet --yes --freeze-installed -c conda-forge nodejs \
     'python-language-server' \
     'jupyterlab-git' \
+    'texlab' \
+    'chktex' \
     'jupyter-lsp=1.5.0' \
   && jupyter labextension install --no-build \
     '@krassowski/jupyterlab-lsp@3.9.1' \
