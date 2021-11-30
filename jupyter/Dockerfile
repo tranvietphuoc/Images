@@ -29,6 +29,7 @@ RUN apt-get update --yes && \
     pkg-config \
     wget \
     git \
+    nodejs \
     ca-certificates \
     sudo \
     locales \
@@ -158,7 +159,9 @@ RUN mamba install --quiet --yes \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-RUN conda install --quiet --yes --freeze-installed -c conda-forge nodejs \
+RUN pip install nb2xls
+
+RUN conda install --quiet --yes --freeze-installed -c conda-forge \
     'python-language-server' \
     'jupyterlab-git' \
     'texlab' \
@@ -168,6 +171,7 @@ RUN conda install --quiet --yes --freeze-installed -c conda-forge nodejs \
     '@krassowski/jupyterlab-lsp@3.9.1' \
   && jupyter lab build --dev-build=False --minimize=True \
   && conda clean --all -f -y \
+  && jupyter lab clean \
   && rm -rf \
     $CONDA_DIR/share/jupyter/lab/staging \
     /home/$NB_USER/.cache/yarn \
