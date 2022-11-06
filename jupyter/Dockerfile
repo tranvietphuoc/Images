@@ -191,17 +191,16 @@ RUN git clone https://github.com/PAIR-code/facets.git && \
 ENV RUSTUP_HOME=/home/${NB_USER}/.rustup \
     CARGO_HOME=/home/${NB_USER}/.cargo \
     PATH=/home/${NB_USER}/.cargo/bin:$PATH \
-    RUST_VERSION=1.56.1
+    RUST_VERSION=1.65
 
 RUN set -eux; \
     dpkgArch="$(dpkg --print-architecture)"; \
     case "${dpkgArch##*-}" in \
-    amd64) rustArch='x86_64-unknown-linux-gnu'; rustupSha256='3dc5ef50861ee18657f9db2eeb7392f9c2a6c95c90ab41e45ab4ca71476b4338' ;; \
-        x86_64) rustArch='x86_64-unknown-linux-musl'; rustupSha256='bdf022eb7cba403d0285bb62cbc47211f610caec24589a72af70e1e900663be9' ;; \
-        aarch64) rustArch='aarch64-unknown-linux-musl'; rustupSha256='89ce657fe41e83186f5a6cdca4e0fd40edab4fd41b0f9161ac6241d49fbdbbbe' ;; \
+        amd64) rustArch='x86_64-unknown-linux-gnu'; rustupSha256='5cc9ffd1026e82e7fb2eec2121ad71f4b0f044e88bca39207b3f6b769aaa799c' ;; \
+        aarch64) rustArch='aarch64-unknown-linux-musl'; rustupSha256='e189948e396d47254103a49c987e7fb0e5dd8e34b200aa4481ecc4b8e41fb929' ;; \
         *) echo >&2 "unsupported architecture: $dpkgArch"; exit 1 ;; \
     esac; \
-    url="https://static.rust-lang.org/rustup/archive/1.24.3/${rustArch}/rustup-init"; \
+    url="https://static.rust-lang.org/rustup/archive/1.25.1/${rustArch}/rustup-init"; \
     wget "$url"; \
     echo "${rustupSha256} *rustup-init" | sha256sum -c -; \
     chmod +x rustup-init; \
@@ -222,6 +221,14 @@ RUN set -eux; \
     cargo install cargo-cache; \
     evcxr_jupyter --install; \
     cargo cache -a;
+
+
+# c++
+RUN mamba install xeus-cling -c conda-forge
+# RUN mambda install root -c conda-forge
+# RUN conda install -c conda-forge root
+RUN conda clean --all -y -f
+RUN mamba clean --all -y -f
 
 # expose
 EXPOSE 8888
