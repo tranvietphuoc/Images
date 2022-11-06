@@ -224,11 +224,11 @@ RUN set -eux; \
 
 
 # c++
-RUN mamba install xeus-cling -c conda-forge
+# RUN mamba install xeus-cling -c conda-forge
 # RUN mambda install root -c conda-forge
 # RUN conda install -c conda-forge root
-RUN conda clean --all -y -f
-RUN mamba clean --all -y -f
+# RUN conda clean --all -y -f
+# RUN mamba clean --all -y -f
 
 # expose
 EXPOSE 8888
