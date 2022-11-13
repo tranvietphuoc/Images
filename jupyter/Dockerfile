@@ -124,13 +124,12 @@ RUN mamba install --quiet --yes \
     'jupyterlab' \
     'altair' \
     'beautifulsoup4' \
-    'bokeh' \
+    'plotly' \
     'bottleneck' \
     'cloudpickle' \
     'conda-forge::blas=*=openblas' \
     'cython' \
     'dask' \
-    'dill' \
     'h5py' \
     'ipympl'\
     'ipywidgets' \
@@ -138,6 +137,7 @@ RUN mamba install --quiet --yes \
     'numba' \
     'numexpr' \
     'pandas' \
+    'numpy' \
     'patsy' \
     'protobuf' \
     'pytables' \
@@ -146,10 +146,12 @@ RUN mamba install --quiet --yes \
     'scipy' \
     'seaborn' \
     'sqlalchemy' \
+    'psycopg2' \
     'statsmodels' \
     'sympy' \
     'widgetsnbextension'\
-    'xlrd'\
+    'openpyxl'\
+    'opencv' \
     && \
     mamba clean --all -f -y && \
     npm cache clean --force && \
@@ -164,8 +166,6 @@ RUN pip install nb2xls
 RUN conda install --quiet --yes --freeze-installed -c conda-forge \
     'python-language-server' \
     'jupyterlab-git' \
-    'texlab' \
-    'chktex' \
     'jupyter-lsp=1.5.0' \
   && jupyter labextension install --no-build \
     '@krassowski/jupyterlab-lsp@3.9.1' \
@@ -224,11 +224,10 @@ RUN set -eux; \
 
 
 # c++
-# RUN mamba install xeus-cling -c conda-forge
-# RUN mambda install root -c conda-forge
+RUN mamba install xeus-cling -c conda-forge
 # RUN conda install -c conda-forge root
 # RUN conda clean --all -y -f
-# RUN mamba clean --all -y -f
+RUN mamba clean --all -y -f
 
 # expose
 EXPOSE 8888
