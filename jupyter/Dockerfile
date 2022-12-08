@@ -34,7 +34,7 @@ RUN apt-get update --yes && \
     sudo \
     locales \
     fonts-liberation \
-    run-one && \
+    run-one &&\
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
@@ -129,7 +129,7 @@ RUN mamba install --quiet --yes \
     'cloudpickle' \
     'conda-forge::blas=*=openblas' \
     'cython' \
-    'dask' \
+    # 'dask' \
     'h5py' \
     'ipympl'\
     'ipywidgets' \
@@ -223,11 +223,13 @@ RUN set -eux; \
     cargo cache -a;
 
 
-# c++
-RUN mamba install xeus-cling -c conda-forge
-# RUN conda install -c conda-forge root
-# RUN conda clean --all -y -f
-RUN mamba clean --all -y -f
+# # c++
+# RUN mamba install xeus-cling -c conda-forge
+# # RUN conda install -c conda-forge root
+# # RUN conda clean --all -y -f
+# RUN mamba clean --all -y -f
+
+
 
 # expose
 EXPOSE 8888
